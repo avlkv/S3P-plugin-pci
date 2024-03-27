@@ -1,0 +1,54 @@
+{
+"plugin": {
+    "reference": "ieee",
+    "type": "SOURCE",
+    "filenames": ["ieee.py"],
+    "localstorage": true
+},
+"task": {
+    "log": -1,
+    "trigger": {
+      "type": "SCHEDULE",
+      "interval": "7 days"
+    }
+},
+"middleware": {
+    "modules": [
+        { "order": 1, "name": "TimezoneSafeControl", "critical": true, "params": {}},
+        { "order": 2, "name": "CutJunkCharactersFromDocumentText", "critical": true, "params": {
+            "fields": ["text", "abstract"]
+        }},
+        { "order": 3, "name": "FilterOnlyNewDocumentWithDB", "critical": true, "params": {}},
+        { "order": 4, "name": "SaveDocumentToDB", "critical": true, "params": {}}
+    ],
+    "bus": {
+        "entities": []
+    }
+},
+"payload": {
+    "file": "ieee.py",
+    "class": "IEEE",
+    "entry": {
+        "point": "content",
+        "params": [
+          {"key": "webdriver", "value": {"type": "module", "name": "WebDriver", "bus": true}},
+          {"key": "max_count_documents", "value": {"type": "const", "value": 200}},
+          {"key": "url", "value": {"type": "const", "value": "https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=10005208&punumber=6287639&sortType=vol-only-newest"}},
+          {"key": "categories", "value": {"type": "const", "value": [
+              "Computational and artificial intelligence",
+              "Computers and information processing",
+              "Communications technology",
+              "Industry applications",
+              "Vehicular and wireless technologies",
+              "Systems engineering and theory",
+              "Intelligent transportation systems",
+              "Information theory",
+              "Electronic design automation and methodology",
+              "Education",
+              "Social implications of technolog"
+          ]}}
+        ]
+    },
+    "additional_methods": null
+}
+}
