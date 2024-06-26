@@ -44,7 +44,7 @@ categories = ('Computational and artificial intelligence',
 url = 'https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=10005208&punumber=6287639&sortType=vol-only-newest'
 
 
-parser = IEEE(driver(), url, categories, 6, doc)
+parser = IEEE(driver(), url, categories, 10, doc)
 docs: list[SPP_document] = parser.content()
 
 print(*docs, sep='\n\r\n')

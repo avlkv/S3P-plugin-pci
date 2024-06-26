@@ -32,7 +32,7 @@
         "point": "content",
         "params": [
           {"key": "webdriver", "value": {"type": "module", "name": "WebDriver", "bus": true}},
-          {"key": "max_count_documents", "value": {"type": "const", "value": 200}},
+          {"key": "max_count_documents", "value": {"type": "const", "value": 50}},
           {"key": "url", "value": {"type": "const", "value": "https://ieeexplore.ieee.org/xpl/tocresult.jsp?isnumber=10005208&punumber=6287639&sortType=vol-only-newest"}},
           {"key": "categories", "value": {"type": "const", "value": [
               "Computational and artificial intelligence",
@@ -45,7 +45,7 @@
               "Information theory",
               "Electronic design automation and methodology",
               "Education",
-              "Social implications of technolog"
+              "Social implications of technology"
           ]}}
         ]
     },

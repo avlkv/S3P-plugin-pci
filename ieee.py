@@ -3,14 +3,10 @@
 
 1/2 документ плагина
 """
-import datetime
 import logging
-import re
 import time
-from random import uniform
 
 import dateparser
-import dateutil.parser
 import pytz
 from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
@@ -36,7 +32,7 @@ class IEEE:
     _content_document: list[SPP_document]
 
     def __init__(self, webdriver, url: str, categories: tuple | list, max_count_documents: int = None,
-                 last_document: SPP_document = None, *args, **kwargs):
+                 last_document: SPP_document = None):
         """
         Конструктор класса парсера
 
@@ -47,6 +43,7 @@ class IEEE:
         self._content_document = []
         self._driver = webdriver
         self.URL = url
+        self.utc = pytz.UTC
         self.CATEGORIES = categories
         self._max_count_documents = max_count_documents
         self._last_document = last_document
@@ -79,12 +76,7 @@ class IEEE:
                 :return:
                 :rtype:
                 """
-        # HOST - это главная ссылка на источник, по которому будет "бегать" парсер
-        self.logger.debug(F"Parser enter to {self.HOST}")
-
-        # ========================================
-        # Тут должен находится блок кода, отвечающий за парсинг конкретного источника
-        # -
+        self.logger.debug(F"Parser enter to {self.URL}")
 
         for page in self._encounter_pages():
             # Получение URL новой страницы
@@ -128,7 +120,6 @@ class IEEE:
         else:
             for i, el in enumerate(articles):
                 try:
-                    # _title = el.find_element(By.CLASS_NAME, 'text-md-md-lh').text
                     _web_link = el.find_element(By.CLASS_NAME, 'text-md-md-lh').find_element(By.TAG_NAME,
                                                                                              'a').get_attribute('href')
                 except Exception as e:
@@ -136,8 +127,6 @@ class IEEE:
                         'Страница не открывается или ошибка получения обязательных полей') from e
                 else:
                     links.append(_web_link)
-                # 'stats-SearchResults_DocResult_ViewMore'
-
         return links
 
     def _parse_news_page(self, url: str) -> None:
@@ -173,7 +162,7 @@ class IEEE:
                     document.other_data['authors'] = []
                 for author in _authors:
                     document.other_data['authors'].append(author.get_attribute('content'))
-            except:
+            except Exception:
                 self.logger.debug('There aren\'t the authors in the page')
 
             try:
@@ -182,13 +171,10 @@ class IEEE:
                 el_text = self._wait.until(ec.presence_of_element_located((By.ID, 'BodyWrapper')))
                 if el_text:
                     document.text = el_text.text
-            except:
+            except Exception:
                 self.logger.debug('There isn\'t a main text in the page')
 
             try:
-                # container = self._wait.until(ec.presence_of_element_located((By.CLASS_NAME, 'document-accordion-section-container')))
-                # self._wait.until(ec.element_to_be_clickable((By.ID, 'keywords-header'))).click()
-                # ПОЧИНИТЬ
                 items = self._driver.find_elements(By.CLASS_NAME, 'doc-keywords-list-item')
                 if items:
                     document.other_data['keywords'] = {}
